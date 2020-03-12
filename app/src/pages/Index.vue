@@ -158,6 +158,7 @@ export default {
   },
   mounted: function() {
     let vm = this;
+    vm.loading = true;
     if (localStorage.getItem("zman_data")) {
       let local_data = JSON.parse(localStorage.getItem("zman_data"));
       let time_elapsed = vm.diff_hours(
@@ -176,7 +177,6 @@ export default {
       // Set data from local storage
       vm.setData(local_data);
     } else {
-      vm.loading = true;
       this.get_zman_data();
     }
   }
