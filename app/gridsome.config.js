@@ -6,23 +6,36 @@
 
 module.exports = {
   siteName: 'What Time is Shabbos?',
-  plugins: [{
-    use: 'gridsome-plugin-pwa',
-    options: {
-      title: 'What Time Is Shabbos',
-      startUrl: '/',
-      display: 'standalone',
-      statusBarStyle: 'default',
-      manifestPath: 'manifest.json',
-      disableServiceWorker: true,
-      serviceWorkerPath: 'service-worker.js',
-      cachedFileTypes: 'js,json,css,html,png,jpg,jpeg,svg',
-      shortName: 'Shabbos Time?',
-      themeColor: '#666600',
-      backgroundColor: '#ffffff',
-      icon: 'src/favicon.png', // must be provided like 'src/favicon.png'
-      msTileImage: '',
-      msTileColor: '#666600'
+  plugins: [
+    {
+      use: "gridsome-plugin-service-worker",
+      options: {
+        networkFirst: {
+          routes: [
+            "/",
+            /\.(js|css|png)$/, // means "every JS, CSS, and PNG images"
+          ],
+        },
+      },
+    },
+    {
+      use: 'gridsome-plugin-pwa',
+      options: {
+        title: 'What Time Is Shabbos',
+        startUrl: '/',
+        display: 'standalone',
+        statusBarStyle: 'default',
+        manifestPath: 'manifest.json',
+        disableServiceWorker: true,
+        serviceWorkerPath: 'service-worker.js',
+        cachedFileTypes: 'js,json,css,html,png,jpg,jpeg,svg',
+        shortName: 'Shabbos Time?',
+        themeColor: '#666600',
+        backgroundColor: '#ffffff',
+        icon: 'src/favicon.png', // must be provided like 'src/favicon.png'
+        msTileImage: '',
+        msTileColor: '#666600'
+      }
     }
-  }]
+  ]
 }
