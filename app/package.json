@@ -1,0 +1,13 @@
+{
+  "name": "app",
+  "private": true,
+  "scripts": {
+    "build": "gridsome build",
+    "develop": "gridsome develop",
+    "explore": "gridsome explore"
+  },
+  "dependencies": {
+    "gridsome": "^0.7.0",
+    "vue-places": "^2.1.3"
+  }
+}
