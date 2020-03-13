@@ -62,6 +62,7 @@ export default {
         .querySelector(".change_location")
         .classList.toggle("change_location--open");
       document.querySelector(".ap-input").value = "";
+      document.querySelector(".ap-input").focus();
     },
     diff_hours(date2, date1) {
       let diff = (date2.getTime() - date1.getTime()) / 1000;
