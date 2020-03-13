@@ -156,9 +156,11 @@ export default {
       vm.loading = false;
     }
   },
+  created() {
+    this.loading = true;
+  },
   mounted: function() {
     let vm = this;
-    vm.loading = true;
     if (localStorage.getItem("zman_data")) {
       let local_data = JSON.parse(localStorage.getItem("zman_data"));
       let time_elapsed = vm.diff_hours(
