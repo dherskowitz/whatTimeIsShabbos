@@ -44,44 +44,47 @@ export default {
     onChange(place_data) {
       let vm = this;
       this.form.country.label = place_data.value;
-      let post_data = {
-        location: place_data.latlng,
-        city: place_data.name,
-        region: place_data.administrative,
-        country: place_data.countryCode.toUpperCase()
-      };
-      vm.$emit("close_location");
-      fetch(
-        "https://ymgbnproc2.execute-api.us-east-1.amazonaws.com/default/get_zmanim",
-        {
-          method: "POST",
-          body: JSON.stringify(post_data)
-        }
-      )
-        .then(response => response.json())
-        .then(data => {
-          let response_data = {
-            city: data.ip_data.city,
-            region: data.ip_data.region,
-            country: data.ip_data.country,
-            status: data.ip_data.status,
-            candle_lighting: data.zman_data.items.filter(
-              item => item.category == "candles"
-            )[0],
-            parsha: data.zman_data.items.filter(
-              item => item.category == "parashat"
-            )[0],
-            havdalah: data.zman_data.items.filter(
-              item => item.category == "havdalah"
-            )[0]
-          };
-          vm.cache = {
-              ...response_data,
-            last_loaded: new Date()
-          };
-          localStorage.setItem("zman_data", JSON.stringify(vm.cache));
-          vm.$emit("update_data", response_data);
-        });
+      if (document.querySelector(".ap-input").value != '') {
+
+        let post_data = {
+          location: place_data.latlng,
+          city: place_data.name,
+          region: place_data.administrative,
+          country: place_data.countryCode.toUpperCase()
+        };
+        vm.$emit("close_location");
+        fetch(
+          "https://ymgbnproc2.execute-api.us-east-1.amazonaws.com/default/get_zmanim",
+          {
+            method: "POST",
+            body: JSON.stringify(post_data)
+          }
+        )
+          .then(response => response.json())
+          .then(data => {
+            let response_data = {
+              city: data.ip_data.city,
+              region: data.ip_data.region,
+              country: data.ip_data.country,
+              status: data.ip_data.status,
+              candle_lighting: data.zman_data.items.filter(
+                item => item.category == "candles"
+              )[0],
+              parsha: data.zman_data.items.filter(
+                item => item.category == "parashat"
+              )[0],
+              havdalah: data.zman_data.items.filter(
+                item => item.category == "havdalah"
+              )[0]
+            };
+            vm.cache = {
+                ...response_data,
+              last_loaded: new Date()
+            };
+            localStorage.setItem("zman_data", JSON.stringify(vm.cache));
+            vm.$emit("update_data", response_data);
+          });
+      }
     }
   }
 };
