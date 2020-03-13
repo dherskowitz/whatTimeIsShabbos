@@ -21,7 +21,9 @@
       </span>
     </section>
     <ChangeLocation v-on:close_location="toggle_location_menu" @update_data="setData" />
-    <div class="loader" v-if="loading"><span class="loader__spinner"></span></div>
+    <div class="loader" v-if="loading">
+      <span class="loader__spinner"></span>
+    </div>
   </Layout>
 </template>
 
@@ -202,6 +204,8 @@ export default {
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  transform: translatez(0);
+  -webkit-transform: translatez(0);
 }
 .home::before {
   content: "";
@@ -210,7 +214,7 @@ export default {
   width: 100%;
   top: 0;
   left: 0;
-  background: rgba(0,0,0, 0.2);
+  background: rgba(0, 0, 0, 0.2);
   z-index: -1;
 }
 .home > p {
