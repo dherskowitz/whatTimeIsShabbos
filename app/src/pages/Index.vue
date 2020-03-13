@@ -20,7 +20,11 @@
         <button class="change_location__button" @click="toggle_location_menu">Change Location</button>
       </span>
     </section>
-    <ChangeLocation v-on:close_location="toggle_location_menu" @update_data="setData" />
+    <ChangeLocation
+      v-on:close_location="toggle_location_menu"
+      v-on:updatingData="updatingData"
+      @update_data="setData"
+    />
     <div class="loader" v-if="loading">
       <span class="loader__spinner"></span>
     </div>
@@ -53,16 +57,28 @@ export default {
       havdalah: {},
       cache: {},
       formatted_date: "",
-      loading: false
+      loading: false,
+      updating_data: false
     };
   },
   methods: {
+    updatingData() {
+      this.loading = true;
+    },
     toggle_location_menu() {
-      document
-        .querySelector(".change_location")
-        .classList.toggle("change_location--open");
-      document.querySelector(".ap-input").value = "";
-      document.querySelector(".ap-input").focus();
+      let vm = this;
+      let menu = document.querySelector(".change_location");
+      menu.classList.toggle("change_location--open");
+      menu.ontransitionend = () => {
+        if (menu.classList.contains("change_location--open")) {
+          document.querySelector(".ap-input").focus();
+        } else {
+          document.querySelector(".ap-input").blur();
+          document.querySelector(".ap-input").value = "";
+          vm.updating_data = false;
+        }
+      };
+      vm.loading = false;
     },
     diff_hours(date2, date1) {
       let diff = (date2.getTime() - date1.getTime()) / 1000;
