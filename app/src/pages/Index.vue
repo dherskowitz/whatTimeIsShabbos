@@ -69,15 +69,15 @@ export default {
       let vm = this;
       let menu = document.querySelector(".change_location");
       menu.classList.toggle("change_location--open");
-      // menu.ontransitionend = () => {
-      //   if (menu.classList.contains("change_location--open")) {
-      //     document.querySelector(".ap-input").focus();
-      //   } else {
-      //     document.querySelector(".ap-input").blur();
-      //     document.querySelector(".ap-input").value = "";
-      //     vm.updating_data = false;
-      //   }
-      // };
+      menu.ontransitionend = () => {
+        if (menu.classList.contains("change_location--open")) {
+          document.querySelector(".ap-input").focus();
+        } else {
+          document.querySelector(".ap-input").blur();
+          document.querySelector(".ap-input").value = "";
+          vm.updating_data = false;
+        }
+      };
       vm.loading = false;
     },
     diff_hours() {
