@@ -120,6 +120,9 @@ export default {
             last_loaded: new Date()
           };
           localStorage.setItem("zman_data", JSON.stringify(vm.cache));
+        })
+        .catch(function(err) {
+          console.log(err);
         });
     },
     update_location_msg(data) {
