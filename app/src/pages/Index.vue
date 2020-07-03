@@ -208,13 +208,18 @@ export default {
 </script>
 
 <style>
+* + * {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
 .home-links a {
   margin-right: 1rem;
 }
 .home {
   text-align: center;
   height: 100%;
-  padding: 0 1rem 4rem;
+  padding: 0 1rem;
+  margin: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
