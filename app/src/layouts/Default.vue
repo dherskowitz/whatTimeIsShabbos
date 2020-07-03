@@ -1,8 +1,6 @@
 <template>
   <div class="layout">
-    <noscript>
-      <div id="noscript">This site requires javascript.</div>
-    </noscript>
+    <noscript v-html="`<div id="noscript">This site requires javascript.</div>`" />
     <!-- <header class="header">
       <strong>
         <g-link to="/">{{ $static.metadata.siteName }}</g-link>
