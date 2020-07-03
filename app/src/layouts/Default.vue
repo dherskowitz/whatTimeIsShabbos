@@ -1,5 +1,8 @@
 <template>
   <div class="layout">
+    <noscript>
+      <div id="noscript">This site requires javascript.</div>
+    </noscript>
     <!-- <header class="header">
       <strong>
         <g-link to="/">{{ $static.metadata.siteName }}</g-link>
@@ -10,7 +13,7 @@
       </nav>
     -->
     <slot/>
-    <Footer/>
+    <!-- <Footer/> -->
   </div>
 </template>
 
@@ -49,6 +52,17 @@ body {
 }
 .show-footer {
   margin-bottom: 10rem;
+}
+#noscript {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0.5rem;
+  color: #fff;
+  text-align: center;
+  z-index: 999999;
+  background: red;
 }
 /* .layout {
   max-width: 760px;
