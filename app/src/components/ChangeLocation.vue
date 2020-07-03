@@ -10,7 +10,7 @@
         v-model="form.country.label"
         placeholder="Where are we going ?"
         @change="val => { form.country.data = val }"
-        @keyup.enter.native="onSubmit"
+        @keyup.enter="onSubmit"
         :options="options"
       ></places>
     </div>
