@@ -2,7 +2,7 @@
   <Layout>
     <section class="home">
       <h1 class="main_title">{{ $static.metadata.siteName }}</h1>
-      <div class="notice" v-if="show_location_error">
+      <div class="notice" v-show="show_location_error">
         <p>We couldn't find your location so we are showing times for Jerusalem IL</p>
         <p>
           You can change your location by
@@ -12,8 +12,8 @@
           >clicking here</button> or using the button below.
         </p>
       </div>
-      <p class="text-lg" v-if="!show_location_error">{{location_msg}}</p>
-      <span v-if="!loading">
+      <p class="text-lg" v-show="!show_location_error">{{location_msg}}</p>
+      <span v-show="!loading">
         <p class="text-lg">This week is Shabbos {{parsha.title}}</p>
         <p class="text-lg">{{candle_lighting.title}} ({{time_before_lighting}}min)</p>
         <p class="text-lg">{{havdalah.title}}</p>
@@ -25,7 +25,7 @@
       v-on:updatingData="updatingData"
       @update_data="setData"
     />
-    <div class="loader" v-if="loading">
+    <div class="loader" v-show="loading">
       <span class="loader__spinner"></span>
     </div>
   </Layout>
