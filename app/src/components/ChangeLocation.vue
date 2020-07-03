@@ -6,13 +6,15 @@
     </div>
     <div class="change_location__content">
       <p>Search By City</p>
-      <places
-        v-model="form.country.label"
-        placeholder="Where are we going ?"
-        @change="val => { form.country.data = val }"
-        v-on:keyup.enter="onSubmit"
-        :options="options"
-      ></places>
+      <div class="change_location__content__form">
+        <places
+          v-model="form.country.label"
+          placeholder="Where are we going ?"
+          @change="val => { form.country.data = val }"
+          :options="options"
+        ></places>
+        <button class="change_location__content__submit" @click="onSubmit">Set Location</button>
+      </div>
     </div>
   </div>
 </template>
@@ -128,5 +130,23 @@ export default {
   right: 10px;
   top: 10px;
   cursor: pointer;
+}
+.change_location__content__form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+span.algolia-places input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.change_location__content__submit {
+  margin: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  width: 8rem;
+  height: 40px;
+  border: 1px solid #CCC;
+  border-left: none;
 }
 </style>
