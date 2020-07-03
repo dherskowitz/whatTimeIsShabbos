@@ -80,9 +80,12 @@ export default {
       };
       vm.loading = false;
     },
-    diff_hours(date2, date1) {
-      let diff = (date2.getTime() - date1.getTime()) / 1000;
-      return Math.abs(Math.round(diff)) / 3600;
+    diff_hours() {
+        let last_updated = new Date(JSON.parse(localStorage.getItem("zman_data")).last_loaded);
+        let now = new Date()
+        let diffTime = Math.abs(last_updated - now);
+        let diffHours = (diffTime / (1000 * 60 * 60)).toFixed(2);
+        return parseFloat(diffHours);
     },
     get_zman_data() {
       let vm = this;
@@ -182,10 +185,7 @@ export default {
     let vm = this;
     if (localStorage.getItem("zman_data")) {
       let local_data = JSON.parse(localStorage.getItem("zman_data"));
-      let time_elapsed = vm.diff_hours(
-        new Date(),
-        new Date(local_data.last_loaded)
-      );
+      let time_elapsed = vm.diff_hours();
       vm.update_location_msg(local_data);
 
       console.log(time_elapsed);
