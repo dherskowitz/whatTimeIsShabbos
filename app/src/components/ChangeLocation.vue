@@ -90,9 +90,9 @@ export default {
           region: place_data.administrative,
           country: place_data.countryCode.toUpperCase()
         };
-        vm.$emit("close_location");
         vm.$emit("updatingData");
         vm.updateData(post_data);
+        vm.$emit("close_location");
       }
     }
   }
