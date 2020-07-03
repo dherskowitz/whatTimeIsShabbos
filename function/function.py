@@ -9,7 +9,7 @@ ip_info_token = os.environ['ipinfo_token']
 
 def get_location_from_ip(ip_address):
     http = urllib3.PoolManager()
-
+    
     ip_info_api_url = f"{ip_info_base_url}{ip_address}?token={ip_info_token}"
     ip_response = http.request('GET', ip_info_api_url)
     ip_data = json.loads(ip_response.data.decode('utf-8'))
@@ -38,7 +38,7 @@ def get_zmanim_from_location(event, context):
     print(event, context)
     data = {}
     http = urllib3.PoolManager()
-
+    
     try:
         if event['httpMethod'] == 'GET':
             client_ip = event['headers']['X-Forwarded-For']
@@ -49,8 +49,8 @@ def get_zmanim_from_location(event, context):
             lat = location_split[0]
             lng = location_split[1]
             tz = ip_data["tz"]
-            time_before_lighting = '40' if ip_data['region'] == 'Jerusalem' else '18'
-        else:
+            time_before_lighting = '40' if ip_data['city'] == 'Jerusalem' else '18'
+        else: 
             data = json.loads(event['body'])
             lat = data['location']['lat']
             lng = data['location']['lng']
@@ -58,7 +58,7 @@ def get_zmanim_from_location(event, context):
             get_tz = http.request('GET', tz_url)
             tz_data = json.loads(get_tz.data.decode('utf-8'))
             tz = tz_data['zoneName']
-            time_before_lighting = '40' if data['region'] == 'Jerusalem' else '18'
+            time_before_lighting = '40' if data['city'] == 'Jerusalem' else '18'
             ip_data = {
                 'tz': tz,
                 'city': data['city'],
@@ -66,8 +66,9 @@ def get_zmanim_from_location(event, context):
                 'country': data['country'],
                 'status': "user_location"
             }
-
+        
         url = f'https://www.hebcal.com/shabbat/?cfg=json&m=42&leyning=off&a=on&b={time_before_lighting}&geo=pos&latitude={lat}&longitude={lng}&tzid={tz}'
+        print(url)
         zm = http.request('GET', url)
         data['zman_data'] = json.loads(zm.data.decode('utf-8'))
         data['ip_data'] = ip_data
