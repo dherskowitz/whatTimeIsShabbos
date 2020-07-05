@@ -19,10 +19,14 @@
         <p class="text-lg">{{havdalah.title}}</p>
         <button class="change_location__button" @click="toggle_location_menu">Change Location<svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd"></path></svg></button>
       </span>
-      <ChangeLocation
-        v-on:updateData="get_zman_data"
-        v-on:close_location="toggle_location_menu"
-      />
+      <transition name="fadeIn" mode="out-in">
+        <ChangeLocation
+          v-if="show_location_form"
+          ref="placesForm"
+          v-on:updateData="get_zman_data"
+          v-on:close_location="toggle_location_menu"
+        />
+      </transition>
     </section>
     <div v-if="show_toast" class="toast">
       <span>{{toast_message}}</span>
@@ -62,25 +66,21 @@ export default {
       formatted_date: "",
       loading: false,
       show_toast: false,
-      toast_message: ""
+      toast_message: "",
+      show_location_form: false
     };
   },
   methods: {
+    focusOnPlaces() {
+      this.$nextTick(() => {
+        const placesForm = this.$refs.placesForm;
+        placesForm.$children[0].$el.focus();
+      });
+    },
     toggle_location_menu() {
-      let vm = this;
-      let menu = document.querySelector(".change_location");
-      let change_btn = document.querySelector(".change_location__button");
-      menu.classList.toggle("change_location--open");
-      change_btn.classList.toggle("change_location__button--active");
-      menu.ontransitionend = () => {
-        if (menu.classList.contains("change_location--open")) {
-          document.querySelector(".ap-input").focus();
-        } else {
-          document.querySelector(".ap-input").blur();
-        }
-      };
-      document.querySelector(".ap-input").value = "";
-      vm.loading = false;
+      this.show_location_form = !this.show_location_form;
+      this.show_location_form ? this.focusOnPlaces() : '';
+      this.loading = false;
     },
     diff_hours() {
       let last_updated = new Date(
@@ -340,6 +340,15 @@ button.change_location__button svg {
 }
 .toast__close svg {
   width: 1.5rem;
+}
+.fadeIn-enter-active,
+.fadeIn-leave-active {
+  transition: opacity 0.25s ease-out;
+}
+.fadeIn-enter,
+.fadeIn-leave-to {
+  opacity: 0;
+  /* pointer-events: none; */
 }
 .loader {
   position: absolute;

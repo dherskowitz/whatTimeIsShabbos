@@ -60,15 +60,10 @@ export default {
 <style>
 .change_location {
   width: 25rem;
+  height: 40px;
   max-width: 100%;
   display: flex;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease-out;
-}
-.change_location--open {
-  opacity: 1;
-  pointer-events: all;
+  justify-content: center;
 }
 .change_location__content__form {
   display: flex;
