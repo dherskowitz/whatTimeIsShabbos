@@ -17,14 +17,17 @@
         <p class="text-lg">This week is Shabbos {{parsha.title}}</p>
         <p class="text-lg">{{candle_lighting.title}} ({{time_before_lighting}}min)</p>
         <p class="text-lg">{{havdalah.title}}</p>
-        <button class="change_location__button" @click="toggle_location_menu">Change Location</button>
+        <button class="change_location__button" @click="toggle_location_menu">Change Location<svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd"></path></svg></button>
       </span>
+      <ChangeLocation
+        v-on:updateData="get_zman_data"
+        v-on:close_location="toggle_location_menu"
+      />
     </section>
-    <ChangeLocation
-      v-on:close_location="toggle_location_menu"
-      v-on:updatingData="updatingData"
-      @update_data="setData"
-    />
+    <div v-if="show_toast" class="toast">
+      <span>{{toast_message}}</span>
+      <span @click="show_toast=!show_toast" class="toast__close"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg></span>
+    </div>
     <div class="loader" v-if="loading">
       <span class="loader__spinner"></span>
     </div>
@@ -58,72 +61,87 @@ export default {
       cache: {},
       formatted_date: "",
       loading: false,
-      updating_data: false
+      show_toast: false,
+      toast_message: ""
     };
   },
   methods: {
-    updatingData() {
-      this.loading = true;
-    },
     toggle_location_menu() {
       let vm = this;
       let menu = document.querySelector(".change_location");
+      let change_btn = document.querySelector(".change_location__button");
       menu.classList.toggle("change_location--open");
+      change_btn.classList.toggle("change_location__button--active");
       menu.ontransitionend = () => {
         if (menu.classList.contains("change_location--open")) {
           document.querySelector(".ap-input").focus();
         } else {
           document.querySelector(".ap-input").blur();
-          document.querySelector(".ap-input").value = "";
-          vm.updating_data = false;
         }
       };
+      document.querySelector(".ap-input").value = "";
       vm.loading = false;
     },
     diff_hours() {
-        let last_updated = new Date(JSON.parse(localStorage.getItem("zman_data")).last_loaded);
-        let now = new Date()
-        let diffTime = Math.abs(last_updated - now);
-        let diffHours = (diffTime / (1000 * 60 * 60)).toFixed(2);
-        return parseFloat(diffHours);
+      let last_updated = new Date(
+        JSON.parse(localStorage.getItem("zman_data")).last_loaded
+      );
+      let now = new Date();
+      let diffTime = Math.abs(last_updated - now);
+      let diffHours = (diffTime / (1000 * 60 * 60)).toFixed(2);
+      return parseFloat(diffHours);
     },
-    get_zman_data() {
+    async get_zman_data(post_data) {
       let vm = this;
-      fetch(
-        "https://ymgbnproc2.execute-api.us-east-1.amazonaws.com/default/get_zmanim"
-      )
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(data) {
-          // Set data with response
-          let response_data = {
-            city: data.ip_data.city,
-            region: data.ip_data.region,
-            country: data.ip_data.country,
-            status: data.ip_data.status,
-            candle_lighting: data.zman_data.items.filter(
-              item => item.category == "candles"
-            )[0],
-            parsha: data.zman_data.items.filter(
-              item => item.category == "parashat"
-            )[0],
-            havdalah: data.zman_data.items.filter(
-              item => item.category == "havdalah"
-            )[0]
-          };
-          vm.setData(response_data);
+      let url = "https://ymgbnproc2.execute-api.us-east-1.amazonaws.com/default/get_zmanim";
+      let response;
+      if (post_data) {
+        console.log(post_data);
+        if (post_data.city == JSON.parse(localStorage.getItem("zman_data")).city) {
+          vm.show_toast = true;
+          vm.toast_message = `You already viewing the Zman for ${post_data.city}`;
+          document.querySelector(".ap-input").value = "";
+          setTimeout(() => {
+            vm.show_toast = false;
+          }, 5000);
+          return false;
+        }
+        this.loading = true;
+        let post_options = {
+          method: "POST",
+          body: JSON.stringify(post_data)
+        };
+        response = await fetch(url, post_options);
+      } else {
+        this.loading = true;
+        response = await fetch(url);
+      }
+      let data = await response.json();
 
-          // Cache response
-          vm.cache = {
-            ...response_data,
-            last_loaded: new Date()
-          };
-          localStorage.setItem("zman_data", JSON.stringify(vm.cache));
-        })
-        .catch(function(err) {
-          console.log(err);
-        });
+      // Set data with response
+      let response_data = {
+        city: data.ip_data.city,
+        region: data.ip_data.region,
+        country: data.ip_data.country,
+        status: data.ip_data.status,
+        candle_lighting: data.zman_data.items.filter(
+          item => item.category == "candles"
+        )[0],
+        parsha: data.zman_data.items.filter(
+          item => item.category == "parashat"
+        )[0],
+        havdalah: data.zman_data.items.filter(
+          item => item.category == "havdalah"
+        )[0]
+      };
+      vm.setData(response_data);
+
+      // Cache response
+      vm.cache = {
+        ...response_data,
+        last_loaded: new Date()
+      };
+      localStorage.setItem("zman_data", JSON.stringify(vm.cache));
     },
     update_location_msg(data) {
       let vm = this;
@@ -264,6 +282,21 @@ export default {
   color: #fff;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+button.change_location__button svg {
+  width: 1.2rem;
+  margin-left: 0.5rem;
+  transition: transform 0.25s ease-out;
+}
+.change_location__button.change_location__button--active {
+  background: rgba(58, 83, 155, 1);
+}
+.change_location__button.change_location__button--active svg {
+  transform: rotate(-180deg);
 }
 .notice {
   background: rgba(255, 148, 120, 0.5);
@@ -282,6 +315,31 @@ export default {
   color: #fff;
   cursor: pointer;
   font-size: inherit;
+}
+.toast {
+  position: absolute;
+  bottom: 4rem;
+  left: 50%;
+  z-index: 9999;
+  transform: translateX(-50%);
+  background: rgba(42, 187, 155, 1);
+  padding: 1rem;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px 0px rgba(36, 37, 42, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem;
+}
+.toast__close {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0 0 0.5rem;
+  cursor: pointer;
+}
+.toast__close svg {
+  width: 1.5rem;
 }
 .loader {
   position: absolute;
@@ -342,6 +400,14 @@ export default {
   }
   .text-lg {
     font-size: 1.25rem;
+  }
+  .toast {
+    left: 0;
+    transform: translateX(0);
+    bottom: 1rem;
+  }
+  .ap-dropdown-menu {
+    top: -310px !important;
   }
 }
 </style>

@@ -1,21 +1,12 @@
 <template>
   <div class="change_location">
-    <div class="change_location__title">
-      <span>Change Location</span>
-      <span class="change_location__close" @click="$emit('close_location');">❌</span>
-    </div>
-    <div class="change_location__content">
-      <p>Search By City</p>
-      <div class="change_location__content__form">
-        <places
-          v-model="form.country.label"
-          placeholder="Where are we going ?"
-          @change="val => { form.country.data = val }"
-          :options="options"
-        ></places>
-        <button class="change_location__content__submit" @click="onSubmit">Set Location</button>
-      </div>
-    </div>
+    <places
+      v-model="form.country.label"
+      placeholder="What city are you in?"
+      @change="val => onSubmit(val)"
+      :options="options"
+      @keyup.native.enter="onSubmit"
+    ></places>
   </div>
 </template>
 
@@ -32,8 +23,12 @@ export default {
       options: {
         // appId: <YOUR_PLACES_APP_ID>,
         // apiKey: <YOUR_PLACES_API_KEY>,
-        // countries: ['US'],
-        type: "city"
+        type: "city",
+        templates: {
+            value: function (suggestion) {
+              return `${suggestion.name}, ${suggestion.countryCode == 'us' ? suggestion.administrative : suggestion.country}`;
+            }
+        }
       },
       form: {
         country: {
@@ -44,44 +39,8 @@ export default {
     };
   },
   methods: {
-    updateData(post_data) {
+    onSubmit(place_data) {
       let vm = this;
-      fetch(
-        "https://ymgbnproc2.execute-api.us-east-1.amazonaws.com/default/get_zmanim",
-        {
-          method: "POST",
-          body: JSON.stringify(post_data)
-        }
-      )
-        .then(response => response.json())
-        .then(data => {
-          let response_data = {
-            city: data.ip_data.city,
-            region: data.ip_data.region,
-            country: data.ip_data.country,
-            status: data.ip_data.status,
-            candle_lighting: data.zman_data.items.filter(
-              item => item.category == "candles"
-            )[0],
-            parsha: data.zman_data.items.filter(
-              item => item.category == "parashat"
-            )[0],
-            havdalah: data.zman_data.items.filter(
-              item => item.category == "havdalah"
-            )[0]
-          };
-          vm.cache = {
-            ...response_data,
-            last_loaded: new Date()
-          };
-          vm.form.country.label = "";
-          localStorage.setItem("zman_data", JSON.stringify(vm.cache));
-          vm.$emit("update_data", response_data);
-        });
-    },
-    onSubmit() {
-      let vm = this;
-      let place_data = this.form.country.data;
       let input = document.querySelector(".ap-input");
       if (input.value != "") {
         let post_data = {
@@ -90,9 +49,8 @@ export default {
           region: place_data.administrative,
           country: place_data.countryCode.toUpperCase()
         };
-        vm.$emit("updatingData");
-        vm.updateData(post_data);
         vm.$emit("close_location");
+        vm.$emit("updateData", post_data);
       }
     }
   }
@@ -101,35 +59,16 @@ export default {
 
 <style>
 .change_location {
-  position: fixed;
-  height: 100%;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 9;
-  background: #fff;
-  transform: translateX(100vw);
-  transition: transform 0.3s ease-in;
+  width: 25rem;
+  max-width: 100%;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease-out;
 }
 .change_location--open {
-  transform: translateX(0);
-}
-.change_location__title {
-  position: relative;
-  background: rgba(1, 50, 67, 1);
-  color: #fff;
-  font-size: 2rem;
-  padding: 0.5rem 0;
-  text-align: center;
-}
-.change_location__content {
-  padding: 1rem;
-}
-.change_location__close {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  cursor: pointer;
+  opacity: 1;
+  pointer-events: all;
 }
 .change_location__content__form {
   display: flex;
@@ -144,9 +83,16 @@ span.algolia-places input {
   margin: 0;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  width: 8rem;
+  width: 10rem;
   height: 40px;
   border: 1px solid #CCC;
   border-left: none;
+}
+.ap-input-icon {
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ap-dropdown-menu {
+  text-align: left;
 }
 </style>
