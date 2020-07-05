@@ -5,7 +5,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/dherskowitz/whatTimeIsShabbos">
-    <img src="src/favicon.png" alt="Logo" width="80" height="80">
+    <img src="/app/src/favicon.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">What Time Is Shabbos</h3>
@@ -14,7 +14,7 @@
     A PWA to get the Shabbos times for your location.
     <br />
     <br />
-    <a href="https://dollar-to-nis.vercel.app/">View Live</a>
+    <a href="https://what-time-is-shabbos.now.sh/">View Live</a>
     ·
     <a href="https://github.com/dherskowitz/whatTimeIsShabbos/issues">Report Bug</a>
     ·
