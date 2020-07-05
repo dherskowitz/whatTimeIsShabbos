@@ -17,7 +17,7 @@
         <p class="text-lg">This week is Shabbos {{parsha.title}}</p>
         <p class="text-lg">{{candle_lighting.title}} ({{time_before_lighting}}min)</p>
         <p class="text-lg">{{havdalah.title}}</p>
-        <button class="change_location__button" @click="toggle_location_menu">Change Location<svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd"></path></svg></button>
+        <button class="change_location__button" v-bind:class="{ 'change_location__button--active': show_location_form }" @click="toggle_location_menu">Change Location<svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd"></path></svg></button>
       </span>
       <transition name="fadeIn" mode="out-in">
         <ChangeLocation
@@ -415,6 +415,8 @@ button.change_location__button svg {
     transform: translateX(0);
     bottom: 1rem;
   }
+}
+@media (max-height: 830px) {
   .ap-dropdown-menu {
     top: -310px !important;
   }
