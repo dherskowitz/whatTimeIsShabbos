@@ -249,6 +249,7 @@ export default {
   background-attachment: fixed;
   transform: translatez(0);
   -webkit-transform: translatez(0);
+  padding-bottom: 2rem;
 }
 .home::before {
   content: "";
