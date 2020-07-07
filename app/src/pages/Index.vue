@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <section class="home" :class="{ "home--add-pad": show_location_form }">
+    <section class="home" :class="{ 'home--add-pad': show_location_form }">
       <h1 class="main_title">{{ $static.metadata.siteName }}</h1>
       <div class="notice" v-if="show_location_error">
         <p>We couldn't find your location so we are showing times for Jerusalem IL</p>
