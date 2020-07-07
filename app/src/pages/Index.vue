@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <section class="home">
+    <section class="home" :class="{ "home--add-pad": show_location_form }">
       <h1 class="main_title">{{ $static.metadata.siteName }}</h1>
       <div class="notice" v-if="show_location_error">
         <p>We couldn't find your location so we are showing times for Jerusalem IL</p>
@@ -249,6 +249,8 @@ export default {
   background-attachment: fixed;
   transform: translatez(0);
   -webkit-transform: translatez(0);
+}
+.home--add-pad {
   padding-bottom: 2rem;
 }
 .home::before {
