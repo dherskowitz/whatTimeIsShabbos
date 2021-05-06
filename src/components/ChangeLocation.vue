@@ -1,63 +1,44 @@
 <template>
   <div class="change_location">
-    <places
-      v-model="form.country.label"
-      placeholder="What city are you in?"
-      @change="val => onSubmit(val)"
-      :options="options"
-      @keyup.native.enter="onSubmit"
-    ></places>
+    <div id="geocoder"></div>
   </div>
 </template>
 
 <script>
-import Places from "vue-places";
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 export default {
   name: "ChangeLocation",
-  components: {
-    Places
-  },
-  data() {
-    return {
-      options: {
-        // appId: <YOUR_PLACES_APP_ID>,
-        // apiKey: <YOUR_PLACES_API_KEY>,
-        type: "city",
-        templates: {
-            value: function (suggestion) {
-              return `${suggestion.name}, ${suggestion.countryCode == 'us' ? suggestion.administrative : suggestion.country}`;
-            }
-        }
-      },
-      form: {
-        country: {
-          label: null,
-          data: {}
-        }
-      }
-    };
-  },
-  methods: {
-    onSubmit(place_data) {
-      let vm = this;
-      let input = document.querySelector(".ap-input");
-      if (input.value != "") {
+  mounted: function() {
+    const vm = this;
+    const geocoder = new MapboxGeocoder({
+      accessToken: process.env.GRIDSOME_MAPBOX_API_KEY,
+      types: 'country,region,place,postcode,locality,neighborhood'
+    });
+    geocoder.addTo('#geocoder');
+    geocoder.on('result', function (e) {
+      console.log(e);
+      console.log(e.result.place_name);
+
         let post_data = {
-          location: place_data.latlng,
-          city: place_data.name,
-          region: place_data.administrative,
-          country: place_data.countryCode.toUpperCase()
+          location: {
+            "lng": e.result.geometry.coordinates[0],
+            "lat": e.result.geometry.coordinates[1]
+          },
+          city: e.result.place_name.split(',')[0].trim(),
+          region: e.result.place_name.split(',')[1].trim(),
+          country: e.result.place_name.split(',')[2].trim()
         };
         vm.$emit("close_location");
         vm.$emit("updateData", post_data);
-      }
-    }
+    });
   }
 };
 </script>
 
 <style>
+
 .change_location {
   width: 25rem;
   height: 40px;
@@ -65,29 +46,7 @@ export default {
   display: flex;
   justify-content: center;
 }
-.change_location__content__form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-span.algolia-places input {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-.change_location__content__submit {
-  margin: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  width: 10rem;
-  height: 40px;
-  border: 1px solid #CCC;
-  border-left: none;
-}
-.ap-input-icon {
-  top: 50%;
-  transform: translateY(-50%);
-}
-.ap-dropdown-menu {
-  text-align: left;
+#geocoder, .mapboxgl-ctrl-geocoder {
+  width: 100%;
 }
 </style>

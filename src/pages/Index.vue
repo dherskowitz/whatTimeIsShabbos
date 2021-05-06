@@ -73,8 +73,7 @@ export default {
   methods: {
     focusOnPlaces() {
       this.$nextTick(() => {
-        const placesForm = this.$refs.placesForm;
-        placesForm.$children[0].$el.focus();
+        document.querySelector(".mapboxgl-ctrl-geocoder--input").focus();
       });
     },
     toggle_location_menu() {
@@ -96,7 +95,6 @@ export default {
       let url = "https://ymgbnproc2.execute-api.us-east-1.amazonaws.com/default/get_zmanim";
       let response;
       if (post_data) {
-        console.log(post_data);
         if (post_data.city == JSON.parse(localStorage.getItem("zman_data")).city) {
           vm.show_toast = true;
           vm.toast_message = `You already viewing the Zman for ${post_data.city}`;
