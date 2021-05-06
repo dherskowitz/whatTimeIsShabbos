@@ -5,9 +5,6 @@
 </template>
 
 <script>
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-
 export default {
   name: "ChangeLocation",
   mounted: function() {
@@ -18,9 +15,6 @@ export default {
     });
     geocoder.addTo('#geocoder');
     geocoder.on('result', function (e) {
-      console.log(e);
-      console.log(e.result.place_name);
-
         let post_data = {
           location: {
             "lng": e.result.geometry.coordinates[0],
@@ -46,7 +40,7 @@ export default {
   display: flex;
   justify-content: center;
 }
-#geocoder, .mapboxgl-ctrl-geocoder {
-  width: 100%;
+#geocoder, .mapboxgl-ctrl-geocoder, .mapboxgl-ctrl-geocoder--input {
+  width: 100% !important;
 }
 </style>

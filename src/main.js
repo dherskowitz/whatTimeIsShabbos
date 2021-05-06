@@ -11,4 +11,14 @@ export default function (Vue, { router, head, isClient }) {
     rel: 'stylesheet',
     href: 'https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap&text=WhatTimeIsShabbos?'
   })
+
+  head.script.push({
+    src: 'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js',
+    body: true
+  })
+
+  head.link.push({
+    rel: 'stylesheet',
+    href: 'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css'
+  })
 }

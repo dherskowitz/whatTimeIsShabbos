@@ -7,10 +7,8 @@
     "explore": "gridsome explore"
   },
   "dependencies": {
-    "@mapbox/mapbox-gl-geocoder": "^4.7.0",
     "gridsome": "^0.7.0",
-    "gridsome-plugin-pwa": "^0.0.18",
-    "mapbox": "^1.0.0-beta10"
+    "gridsome-plugin-pwa": "^0.0.18"
   },
   "devDependencies": {
     "gridsome-plugin-service-worker": "^0.1.5"
