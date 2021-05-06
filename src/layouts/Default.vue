@@ -48,6 +48,11 @@ body {
   overflow-x: hidden;
   height: 100%;
 }
+@media(max-height: 445px) {
+  #app {
+    height: auto;
+  }
+}
 .show-footer {
   margin-bottom: 10rem;
 }
